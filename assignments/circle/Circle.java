@@ -1,9 +1,10 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 /** Circle by Jort van Driel 1579584 and Thijs Aarnoudse 1551159 as group 52 */
 public class Circle {
 
     // Creates the scanner from the System input stream
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     /**
      * Runs the program, by fetching the required data, checking if the point is in the circles and then it reports 
@@ -19,32 +20,32 @@ public class Circle {
             Vector point = readVector();
 
             // This variable is true if the point is inside the first ring.
-            boolean pointIsInsideRing1 = ring1.encompassesPoint(point);
+            boolean pointIsInRing1 = ring1.encompassesPoint(point);
             // This variable is true if the point is inside the second ring.
-            boolean pointIsInsideRing2 = ring2.encompassesPoint(point);
+            boolean pointIsInRing2 = ring2.encompassesPoint(point);
             
-            if (pointIsInsideRing1 && pointIsInsideRing2) {
+            if (pointIsInRing1 && pointIsInRing2) {
                 System.out.println("The point lies in both circles");
-            } else if (pointIsInsideRing1) {
+            } else if (pointIsInRing1) {
                 System.out.println("The point lies in the first circle");
-            } else if (pointIsInsideRing2) {
+            } else if (pointIsInRing2) {
                 System.out.println("he point lies in the second circle");
             } else {
                 System.out.println("The point does not lie in either circle");
             }
-        } catch (Exception e) {
+        } catch (InputMismatchException | IllegalArgumentException e) {
             System.out.println("input error");
         } 
     }
 
-    private Ring readRing() throws Exception {
+    private Ring readRing() throws IllegalArgumentException {
         // This is the midpoint of the ring and is read as a vector.
         Vector midpoint = readVector();
         // This is the radius of the ring and read as the next double from the scanner.
         double radius = scanner.nextDouble();
 
         if (radius < 0) {
-            throw new Exception();
+            throw new IllegalArgumentException();
         }
 
         return new Ring(midpoint, radius);
@@ -64,8 +65,10 @@ public class Circle {
     }
 
     class Vector {
-        // These are the x and y coordinates.
-        final double x, y;
+        // This is the x coordinate.
+        final double x;
+        // This is the y coordinate.
+        final double y;
 
         public Vector(double x, double y) {
             this.x = x;
