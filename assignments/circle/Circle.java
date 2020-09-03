@@ -1,9 +1,8 @@
-package assignments.circle;
-
 import java.util.Scanner;
 /** Circle by Jort van Driel 1579584 and Thijs Aarnoudse 1551159 as group 52 */
 public class Circle {
 
+    // Creates the scanner from the System input stream
     private Scanner scanner = new Scanner(System.in);
 
     public void run() {
