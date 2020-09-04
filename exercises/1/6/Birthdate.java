@@ -1,6 +1,6 @@
-package uniboys.homework;
+package 1.6;
 
-import static uniboys.homework.BirthDate.ANSICode.*;
+import static 1.6.BirthDate.ANSICode.*;
 
 import java.time.LocalDate;
 import java.time.Period;
