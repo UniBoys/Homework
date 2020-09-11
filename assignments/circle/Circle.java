@@ -1,3 +1,5 @@
+package assignments.circle;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 /** Circle by Jort van Driel 1579584 and Thijs Aarnoudse 1551159 as group 52 */

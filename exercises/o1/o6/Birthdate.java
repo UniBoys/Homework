@@ -1,6 +1,6 @@
-package 1.6;
+package exercises.o1.o6;
 
-import static 1.6.BirthDate.ANSICode.*;
+import static exercises.o1.o6.BirthDate.ANSICode.*;
 
 import java.time.LocalDate;
 import java.time.Period;
