@@ -1,9 +1,4 @@
-package assignments.hangman;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -35,7 +30,10 @@ class Hangman {
 
         //Select a secret word
         String secret = bagOfWords[random.nextInt(bagOfWords.length)];
-        List<Character> guestLetters = Collections.nCopies(secret.length(), '_');
+        List<Character> guestLetters = new ArrayList<>(Collections.nCopies(secret.length(), '_'));
+
+        guestLetters.forEach(l -> System.out.print(l));
+        System.out.print("\n");
 
         int points = 10;
 
@@ -44,6 +42,8 @@ class Hangman {
 
             if (!secret.contains("" + guestLetter) || guestLetters.contains(guestLetter)) {
                 points--;
+                guestLetters.forEach(l -> System.out.print(l));
+                System.out.print("\n");
                 continue;
             }
 
@@ -54,7 +54,7 @@ class Hangman {
                     guestLetters.set(i, guestLetter);
                 }
 
-                System.out.print(secret.charAt(i));
+                System.out.print(guestLetters.get(i));
             }
 
             System.out.print("\n");
