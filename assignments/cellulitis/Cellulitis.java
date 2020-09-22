@@ -1,5 +1,3 @@
-package assignments.cellulitis;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
  */
 class Cellulitis {
     // The standerd input scanner.
-    
+
     Scanner scanner = new Scanner(System.in);
     // This will be the config for this program.
     Configuration config;
@@ -39,7 +37,7 @@ class Cellulitis {
                 this.draw(currentGeneration);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("input error");
         }
     }
 
@@ -156,19 +154,26 @@ class Cellulitis {
             String index;
 
             while (!(index = scanner.next()).equals("init_end")) {
-                this.positivePositions.add(Integer.parseInt(index) - 1);
+                // The parsed index value.
+                int i = Integer.parseInt(index) - 1;
+
+                if (i < 0 || i >= this.numberOfCells) {
+                    throw new Exception();
+                }
+
+                this.positivePositions.add(i);
             }
 
             if (automaton.equals("A")) {
-                patterns = Arrays.asList(1, 3, 4, 5, 6).stream().map(Pattern::new).collect(Collectors.toList());
+                this.patterns = Arrays.asList(1, 3, 4, 5, 6).stream().map(Pattern::new).collect(Collectors.toList());
             } else if (automaton.equals("B")) {
-                patterns = Arrays.asList(1, 2, 4, 6).stream().map(Pattern::new).collect(Collectors.toList());
+                this.patterns = Arrays.asList(1, 2, 4, 6).stream().map(Pattern::new).collect(Collectors.toList());
             } else if (automaton.equals("U")) {
-                patterns = new ArrayList<>();
+                this.patterns = new ArrayList<>();
 
                 for (var i = 0; i < 8; i++) {
                     if (scanner.nextInt() == 1) {
-                        patterns.add(new Pattern(i));
+                        this.patterns.add(new Pattern(i));
                     }
                 }
             } else {
@@ -186,9 +191,9 @@ class Cellulitis {
         public boolean rightCell;
 
         public Pattern(int index) {
-            this.leftCell = (index + 1) > 4;
-            this.middleCell = index == 2 || index == 6 || (index + 1) % 4 == 0;
-            this.rightCell = (index + 1) % 2 == 0;
+            this.leftCell = (index >> 2) % 2 == 1;
+            this.middleCell = (index >> 1) % 2 == 1;
+            this.rightCell = index % 2 == 1;
         }
 
         /**
