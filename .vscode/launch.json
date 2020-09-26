@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Cellulitis",
+            "request": "launch",
+            "mainClass": "assignments.Cellulitis",
+            "projectName": "Homework_e5fa9cec"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch)-Test",
             "request": "launch",
             "cwd": "${workspaceFolder}",
