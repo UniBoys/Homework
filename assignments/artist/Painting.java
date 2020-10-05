@@ -63,8 +63,8 @@ public class Painting extends JPanel implements ActionListener {
         }
     }
 
-    int TOTAL_STEPS = 10;
-    float STEEPNESS = 2f;
+    int TOTAL_STEPS = 20;
+    float STEEPNESS = (float)TOTAL_STEPS / 4f;
     float START_AREA;
 
     void regenerate() {
@@ -72,7 +72,7 @@ public class Painting extends JPanel implements ActionListener {
 
         shapes = new ArrayList<>();
 
-        generatev2();
+        generateShapes();
     }
 
     boolean isInsideSomeTriangle(TriangleDingus dingus) {
@@ -87,7 +87,7 @@ public class Painting extends JPanel implements ActionListener {
         return false;
     }
 
-    void generatev2() {
+    void generateShapes() {
         float radius = random.nextFloat() * 20 + 40;
         float rotation = random.nextFloat() * (2f / 3f) * (float) Math.PI;
 
@@ -123,55 +123,6 @@ public class Painting extends JPanel implements ActionListener {
                     shapes.get(i).add(dingus);
                 }
             }
-        }
-    }
-
-    void generatev1() {
-        float radius = random.nextFloat() * 20 + 40;
-        float rotation = random.nextFloat() * (2f / 3f) * (float) Math.PI;
-
-        TriangleDingus centerTriangle = new TriangleDingus(getSize().width / 2, getSize().height / 2, rotation, radius);
-        shapes.add(new ArrayList<>(Arrays.asList(centerTriangle)));
-
-        START_AREA = 0.75f * (float) Math.sqrt(3d) * (float) Math.pow(radius, 2);
-
-        float[][][] children = centerTriangle.getNextStartingCords();
-
-        for (float[][] child : children) {
-            generateShapesv1(child[0], child[1], child[2], 0);
-        }
-    }
-
-    void generateShapesv1(float[] corner0, float[] corner1, float[] corner2, int step) {
-        float decrease = (1f / ((STEEPNESS / TOTAL_STEPS) * (float) Math.pow((double)(step + 1f), 2d) + 1f));
-        float randomness = random.nextFloat() * 0.1f + 0.95f;
-        float area = START_AREA * decrease * randomness;
-
-        if (area < 0 || step >= TOTAL_STEPS) {
-            if(area < 0) System.out.println("to small");
-            return;
-        }
-
-        TriangleDingus dingus = new TriangleDingus(area, corner0, corner1, corner2);
-
-        for(ArrayList<TriangleDingus> list : shapes) {
-            for(TriangleDingus triangle : list) {
-                if(triangle.isInside(dingus.getCorner(2))) {
-                    return;
-                }
-            }
-        }
-
-        if(shapes.size() == step) {
-            shapes.add(new ArrayList<>());
-        }
-
-        shapes.get(step).add(dingus);
-
-        float[][][] children = dingus.getNextStartingCords();
-
-        for (float[][] child : children) {
-            generateShapesv1(child[0], child[1], child[2], ++step);
         }
     }
 
