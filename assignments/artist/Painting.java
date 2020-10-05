@@ -63,7 +63,7 @@ public class Painting extends JPanel implements ActionListener {
         }
     }
 
-    int TOTAL_STEPS = 20;
+    int TOTAL_STEPS = 10;
     float STEEPNESS = 2f;
     float START_AREA;
 
@@ -72,6 +72,61 @@ public class Painting extends JPanel implements ActionListener {
 
         shapes = new ArrayList<>();
 
+        generatev2();
+    }
+
+    boolean isInsideSomeTriangle(TriangleDingus dingus) {
+        for(ArrayList<TriangleDingus> list : shapes) {
+            for(TriangleDingus triangle : list) {
+                if(triangle.isInside(dingus.getCorner(2))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void generatev2() {
+        float radius = random.nextFloat() * 20 + 40;
+        float rotation = random.nextFloat() * (2f / 3f) * (float) Math.PI;
+
+        TriangleDingus centerTriangle = new TriangleDingus(getSize().width / 2, getSize().height / 2, rotation, radius);
+        shapes.add(new ArrayList<>(Arrays.asList(centerTriangle)));
+
+        START_AREA = 0.75f * (float) Math.sqrt(3d) * (float) Math.pow(radius, 2);
+
+        for(int i = 1; i < TOTAL_STEPS; i++) {
+            for(TriangleDingus parent : shapes.get(i - 1)) {
+                float[][][] children = parent.getNextStartingCords();
+
+                for(float[][] child : children) {
+                    float decrease = (1f / ((STEEPNESS / TOTAL_STEPS) * (float) Math.pow((double)(i + 1f), 2d) + 1f));
+                    float randomness = random.nextFloat() * 0.04f + 0.98f;
+                    float area = START_AREA * decrease * randomness;
+            
+                    if (area < 0) {
+                        System.out.println("to small");
+                        continue;
+                    }
+
+                    TriangleDingus dingus = new TriangleDingus(area, child[0], child[1], child[2]);
+
+                    if(isInsideSomeTriangle(dingus)) {
+                        continue;
+                    }
+
+                    if(shapes.size() == i) {
+                        shapes.add(new ArrayList<>());
+                    }
+
+                    shapes.get(i).add(dingus);
+                }
+            }
+        }
+    }
+
+    void generatev1() {
         float radius = random.nextFloat() * 20 + 40;
         float rotation = random.nextFloat() * (2f / 3f) * (float) Math.PI;
 
@@ -83,13 +138,13 @@ public class Painting extends JPanel implements ActionListener {
         float[][][] children = centerTriangle.getNextStartingCords();
 
         for (float[][] child : children) {
-            generateShapes(child[0], child[1], child[2], 0);
+            generateShapesv1(child[0], child[1], child[2], 0);
         }
     }
 
-    void generateShapes(float[] corner0, float[] corner1, float[] corner2, int step) {
+    void generateShapesv1(float[] corner0, float[] corner1, float[] corner2, int step) {
         float decrease = (1f / ((STEEPNESS / TOTAL_STEPS) * (float) Math.pow((double)(step + 1f), 2d) + 1f));
-        float randomness = random.nextFloat() * 0.04f + 0.98f;
+        float randomness = random.nextFloat() * 0.1f + 0.95f;
         float area = START_AREA * decrease * randomness;
 
         if (area < 0 || step >= TOTAL_STEPS) {
@@ -116,7 +171,7 @@ public class Painting extends JPanel implements ActionListener {
         float[][][] children = dingus.getNextStartingCords();
 
         for (float[][] child : children) {
-            generateShapes(child[0], child[1], child[2], ++step);
+            generateShapesv1(child[0], child[1], child[2], ++step);
         }
     }
 
