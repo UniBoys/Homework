@@ -76,15 +76,9 @@ public class Painting extends JPanel implements ActionListener {
     }
 
     boolean isInsideSomeTriangle(TriangleDingus dingus) {
-        for(ArrayList<TriangleDingus> list : shapes) {
-            for(TriangleDingus triangle : list) {
-                if(triangle.isInside(dingus.getCorner(2))) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return shapes.parallelStream()
+                .flatMap(l -> l.parallelStream())
+                .anyMatch(triangle -> triangle.isInside(dingus.getCorner(2)));
     }
 
     void generateShapes() {

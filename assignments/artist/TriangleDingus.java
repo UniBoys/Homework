@@ -11,7 +11,7 @@ class TriangleDingus extends Dingus {
 
     public TriangleDingus(int x, int y, float rotation, float radius) {
         super(1, 1);
-
+        color = new Color((int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()));
         float[] center = new float[] { x, y };
 
         this.corner1 = calcCorner(center, radius, rotation, 0f);
@@ -21,7 +21,7 @@ class TriangleDingus extends Dingus {
 
     public TriangleDingus(float area, float[] corner0, float[] corner1, float[] corner2) {
         super(1, 1);
-
+        color = new Color((int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()));
         this.corner1 = corner1;
         this.corner2 = corner2;
 
@@ -61,7 +61,8 @@ class TriangleDingus extends Dingus {
 
     @Override
     void draw(Graphics g) {
-        g.drawPolygon(getCord(0), getCord(1), 3);
+        g.setColor(color);
+        g.fillPolygon(getCord(0), getCord(1), 3);
     }
 
     int[] getCord(int index) {
