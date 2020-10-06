@@ -5,25 +5,32 @@ import java.awt.Color;
 
 class TriangleDingus extends Dingus {
 
+    private float HUE_INCREASE = 5;
+
     private float[] corner1;
     private float[] corner2;
     private float[] corner3;
+    private float hue;
+    private boolean startingTriangle = false;
 
-    public TriangleDingus(int x, int y, float rotation, float radius) {
+    public TriangleDingus(float hue, int x, int y, float rotation, float radius) {
         super(1, 1);
-        color = new Color((int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()));
+        
         float[] center = new float[] { x, y };
 
         this.corner1 = calcCorner(center, radius, rotation, 0f);
         this.corner2 = calcCorner(center, radius, rotation, 1f);
         this.corner3 = calcCorner(center, radius, rotation, 2f);
+        this.hue = hue + random.nextFloat() * HUE_INCREASE + 3;
+        this.startingTriangle = true;
     }
 
-    public TriangleDingus(float area, float[] corner0, float[] corner1, float[] corner2) {
+    public TriangleDingus(float hue, float area, float[] corner0, float[] corner1, float[] corner2) {
         super(1, 1);
-        color = new Color((int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()),(int) (255f * random.nextFloat()));
+        
         this.corner1 = corner1;
         this.corner2 = corner2;
+        this.hue = hue + random.nextFloat() * HUE_INCREASE;
 
         // The length of the vector from corner1 to corner2 of the original triangle.
         float length = length(corner1, corner2);
@@ -55,14 +62,14 @@ class TriangleDingus extends Dingus {
                 positive ? betweenY + heightY : betweenY - heightY };
     }
 
-    float length(float[] a, float[] b) {
-        return (float) Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
-    }
-
     @Override
     void draw(Graphics g) {
-        g.setColor(color);
+        g.setColor(Color.getHSBColor((this.hue % 360f) / 360f, random.nextFloat() * .05f + .875f, random.nextFloat() * .05f + .95f));
         g.fillPolygon(getCord(0), getCord(1), 3);
+    }
+
+    float length(float[] a, float[] b) {
+        return (float) Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
     }
 
     int[] getCord(int index) {
@@ -74,6 +81,10 @@ class TriangleDingus extends Dingus {
     }
 
     float[][][] getNextStartingCords() {
+        if(this.startingTriangle) {
+            return new float[][][] { {corner3, corner2, corner1}, { corner1, corner2, corner3 }, { corner2, corner1, corner3 } };
+        }
+
         return new float[][][] { { corner1, corner2, corner3 }, { corner2, corner1, corner3 } };
     }
 
@@ -95,6 +106,10 @@ class TriangleDingus extends Dingus {
         }
 
         return null;
+    }
+
+    float getHue() {
+        return hue;
     }
 
     boolean isInside(float[] point) {
