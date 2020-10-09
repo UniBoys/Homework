@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - BulbCircle",
+            "request": "launch",
+            "mainClass": "exercises.o6.BulbCircle",
+            "projectName": "Homework_e5fa9cec"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - RandomArtist",
             "request": "launch",
             "mainClass": "assignments.artist.RandomArtist",
