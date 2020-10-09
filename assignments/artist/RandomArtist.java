@@ -1,5 +1,3 @@
-package assignments.artist;
-
 /** Main class for HA Random Artist
  * can be used unchanged in most cases
  *

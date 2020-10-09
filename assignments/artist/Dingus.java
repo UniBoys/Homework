@@ -1,5 +1,3 @@
-package assignments.artist;
-
 // TO BE COMPLETED 
 import java.awt.Color;
 import java.awt.Graphics;

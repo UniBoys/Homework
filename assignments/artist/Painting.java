@@ -1,11 +1,12 @@
-package assignments.artist;
-
 /*
  * part of HA Random artist
- * TO BE COMPLETED
  *
  * @author huub
  * @author kees
+ * 
+ * Completed by Jort van Driel 1579584
+ * and Thijs Aarnoudse 1551159
+ * as group 52
  */
 
 import java.awt.*;
@@ -29,8 +30,11 @@ public class Painting extends JPanel implements ActionListener {
     final static Random random = new Random(SEED); // random generator to be used by all classes
     int numberOfRegenerates = 0;
 
+    // The allowed amount of steps for this painting.
     int TOTAL_STEPS = 50;
+    // The steepness with which the area should decrease per step.
     float STEEPNESS = (float)TOTAL_STEPS / 4f;
+    // The area of the starting triangle.
     float START_AREA;
 
     /*---- Screenshots ----
@@ -50,7 +54,7 @@ public class Painting extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) { // draw all your shapes
         super.paintComponent(g); // clears the panel
-        //Collections.reverse(shapes);
+        Collections.reverse(shapes);
         shapes.forEach(a -> a.forEach(s -> s.draw(g)));
     }
 
@@ -75,20 +79,30 @@ public class Painting extends JPanel implements ActionListener {
         generateTriangles();
     }
 
+    /**
+     * Generates the triangles for this painting.
+     */
     void generateTriangles() {
+        // The radius of the starting triangle.
         float radius = random.nextFloat() * 40 + 80;
+        // The rotation of the starting triangle.
         float rotation = random.nextFloat() * (2f / 3f) * (float) Math.PI;
+        // The hue of the starting triangle.
         float hue = random.nextFloat() * 360;
+        // The x coordinate of the starting triangle.
         float x = getSize().width / 2f - random.nextFloat() * 750 + 375;
+        // The y coordinate of the starting triangle.
         float y = getSize().height / 2f - random.nextFloat() * 300 + 150;
 
+        // The starting/centrer triangle.
         TriangleDingus centerTriangle = new TriangleDingus(hue, (int) x, (int) y, rotation, radius);
         shapes.add(new ArrayList<>(Arrays.asList(centerTriangle)));
 
         START_AREA = 0.75f * (float) Math.sqrt(3d) * (float) Math.pow(radius, 2);
 
-        for(int depth = 1; depth < TOTAL_STEPS; depth++) {
-            for(TriangleDingus parent : shapes.get(depth - 1)) {
+        for (int depth = 1; depth < TOTAL_STEPS; depth++) {
+            for (TriangleDingus parent : shapes.get(depth - 1)) {
+                // The children of the parent triangle.
                 float[][][] children = parent.getNextStartingCords();
 
                 generateChildren(children, parent, depth);
@@ -96,34 +110,48 @@ public class Painting extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Generates the children triangles for the given parent and depth.
+     */
     void generateChildren(float[][][] children, TriangleDingus parent, int depth) {
-        for(float[][] child : children) {
+        for (float[][] child : children) {
             generateChild(child, parent, depth);
         }
     }
 
+    /**
+     * Generates a child triangle for the given parent and depth.
+     */
     void generateChild(float[][] child, TriangleDingus parent, int depth) {
+        // The amount that this area should decrease.
         float decrease = (1f / ((STEEPNESS / TOTAL_STEPS) * (float) Math.pow((double)(depth + 1f), 2d) + 1f));
+        // A random number between 0.98 and 1.02 that will add some randomness to the size decreasing.
         float randomness = random.nextFloat() * 0.04f + 0.98f;
+        // The area of this child triangle.
         float area = START_AREA * decrease * randomness;
 
         if (area < 0) {
             return;
         }
 
+        // The child triangle.
         TriangleDingus dingus = new TriangleDingus(parent.getHue(), area, child[0], child[1], child[2]);
 
-        if(isInsideSomeTriangle(dingus)) {
+        if (isInsideSomeTriangle(dingus)) {
             return;
         }
 
-        if(shapes.size() == depth) {
+        if (shapes.size() == depth) {
             shapes.add(new ArrayList<>());
         }
 
         shapes.get(depth).add(dingus);
     }
 
+    /**
+     * Returns true if the given triangle is inside some triangle that has already been generated.
+     * Currently this check isn't fully accurate, but a fully accurate check would be inefficient.
+     */
     boolean isInsideSomeTriangle(TriangleDingus dingus) {
         return shapes.parallelStream()
                 .flatMap(l -> l.parallelStream())
